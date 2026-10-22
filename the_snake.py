@@ -144,7 +144,9 @@ class Snake(GameObject):
 
     def reset(self):
         self.length = 1
+        self.position = [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2]
         self.positions = [self.position]
+        self.direction = choice([UP, DOWN, RIGHT, LEFT])
 
 
 def main():
@@ -156,23 +158,23 @@ def main():
     snake = Snake()
 
     while True:
+        clock.tick(SPEED)
         snake.handle_keys()
         snake.update_direction()
-        snake.move()
 
         if snake.positions[0] in snake.positions[1:]:
             snake.reset()
             screen.fill(BOARD_BACKGROUND_COLOR)
 
-        if snake.positions[0] == apple.position:
+        if snake.get_head_position() == apple.position:
             snake.length += 1
             apple.randomize_position()
 
+        snake.move()
         snake.draw()
         apple.draw()
         pygame.display.update()
         screen.fill(BOARD_BACKGROUND_COLOR)
-        clock.tick(SPEED)
 
 
 if __name__ == '__main__':
