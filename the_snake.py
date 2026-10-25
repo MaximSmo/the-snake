@@ -57,7 +57,7 @@ class GameObject():
         pygame.draw.rect(screen, color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
-    def draw_rec(self):
+    def draw(self):
         """Пустой метод для наследования отрисовки объектов."""
 
 
