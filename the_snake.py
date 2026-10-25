@@ -30,7 +30,7 @@ SNAKE_COLOR = (0, 255, 0)
 SPEED = 20
 
 # Словарь для смены направления движения змейки
-dictionary_of_directions = {
+DICTIONARY_OF_DIRECTIONS = {
     (pygame.K_UP, RIGHT): UP,
     (pygame.K_RIGHT, DOWN): RIGHT,
     (pygame.K_DOWN, LEFT): DOWN,
@@ -65,9 +65,9 @@ class GameObject():
 
     def draw_one_cell(self, position, color):
         """Рисует одну ячейку с заданным цветом и координатами."""
-        rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, color, rect)
-        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+        rectangle = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, color, rectangle)
+        pygame.draw.rect(screen, BORDER_COLOR, rectangle, 1)
 
     def draw(self):
         """Пустой метод для наследования отрисовки объектов."""
@@ -147,8 +147,8 @@ class Snake(GameObject):
             self.draw_one_cell(position, self.body_color)
 
         if self.last:
-            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+            last_rectangle = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rectangle)
 
     def update_direction(self, next_direction):
         """Обновляет направление движения змейки."""
@@ -175,7 +175,7 @@ def handle_keys(game_object):
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
             game_object.update_direction(
-                dictionary_of_directions.get(
+                DICTIONARY_OF_DIRECTIONS.get(
                     (event.key, game_object.direction),
                     game_object.direction,
                 )
