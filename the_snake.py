@@ -29,6 +29,18 @@ SNAKE_COLOR = (0, 255, 0)
 # Скорость движения змейки:
 SPEED = 20
 
+# Словарь для смены направления движения змейки
+dictionary_of_directions = {
+    (pygame.K_UP, RIGHT): UP,
+    (pygame.K_RIGHT, DOWN): RIGHT,
+    (pygame.K_DOWN, LEFT): DOWN,
+    (pygame.K_LEFT, UP): LEFT,
+    (pygame.K_UP, LEFT): UP,
+    (pygame.K_RIGHT, UP): RIGHT,
+    (pygame.K_DOWN, RIGHT): DOWN,
+    (pygame.K_LEFT, DOWN): LEFT,
+}
+
 # Настройка игрового окна:
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
@@ -51,7 +63,7 @@ class GameObject():
         self.position = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
         self.body_color = BOARD_BACKGROUND_COLOR
 
-    def draw_rec(self, position, color):
+    def draw_one_cell(self, position, color):
         """Рисует одну ячейку с заданным цветом и координатами."""
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, color, rect)
@@ -76,9 +88,9 @@ class Apple(GameObject):
         super().__init__()
         self.body_color = body_color
 
-    def randomize_position(self, snake):
+    def randomize_position(self, snake_positions):
         """Задает яблоку случайные координаты на свободной клетке."""
-        while self.position in snake:
+        while self.position in snake_positions:
             self.position = [
                 randint(0, int(SCREEN_WIDTH / GRID_SIZE) - 1) * GRID_SIZE,
                 randint(0, int(SCREEN_HEIGHT / GRID_SIZE) - 1) * GRID_SIZE,
@@ -86,7 +98,7 @@ class Apple(GameObject):
 
     def draw(self):
         """Рисует яблоко."""
-        self.draw_rec(self.position, self.body_color)
+        self.draw_one_cell(self.position, self.body_color)
 
 
 class Snake(GameObject):
@@ -132,7 +144,7 @@ class Snake(GameObject):
     def draw(self):
         """Рисуем тело змейки с первого по последний сегмент."""
         for position in self.positions:
-            self.draw_rec(position, self.body_color)
+            self.draw_one_cell(position, self.body_color)
 
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
@@ -157,27 +169,17 @@ class Snake(GameObject):
 
 def handle_keys(game_object):
     """Управление игрой клавишами."""
-    dict_of_direction = {
-        (pygame.K_UP, RIGHT): UP,
-        (pygame.K_RIGHT, DOWN): RIGHT,
-        (pygame.K_DOWN, LEFT): DOWN,
-        (pygame.K_LEFT, UP): LEFT,
-        (pygame.K_UP, LEFT): UP,
-        (pygame.K_RIGHT, UP): RIGHT,
-        (pygame.K_DOWN, RIGHT): DOWN,
-        (pygame.K_LEFT, DOWN): LEFT,
-    }
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
-            try:
-                game_object.update_direction(
-                    dict_of_direction[event.key, game_object.direction]
+            game_object.update_direction(
+                dictionary_of_directions.get(
+                    (event.key, game_object.direction),
+                    game_object.direction,
                 )
-            except KeyError:
-                break
+            )
 
 
 def main():
