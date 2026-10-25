@@ -60,6 +60,7 @@ class GameObject():
     def draw_rec(self):
         """Пустой метод для наследования отрисовки объектов."""
 
+
 class Apple(GameObject):
     """Игровой объект 'яблоко'.
 
